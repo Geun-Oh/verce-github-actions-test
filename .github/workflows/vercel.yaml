@@ -8,6 +8,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: cache
+        with:
+          # # cache의 대상
+          path: ./node_modules
+          # 실행 context에서 가져온 package.json 파일을 해싱해서 키로 저장
+          # 만약 key가 그대로면 캐싱된 파일을 찾아서 사용하고,
+          # key가 바뀌었다면 변경사항이 있다고 판단해 다시 install
+          key: ${{ runner.os }}-node-${{ hashFiles('./package.json') }}
+
       - name: Deploy to Vercel Action
         uses: BetaHuhn/deploy-to-vercel-action@latest
         with:
